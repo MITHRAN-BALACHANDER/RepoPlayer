@@ -1,0 +1,11 @@
+agenttape>=0.1.8
+requests>=2.32
+pyyaml>=6.0
+python-dotenv>=1.0
+pytest>=7.0
+
+# LLM providers — install whichever you use
+# pip install google-genai        # Gemini (default, free)
+# pip install ollama               # Ollama (local, free)
+# pip install anthropic>=0.111.0   # Anthropic Claude
+# pip install openai               # OpenAI

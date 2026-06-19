@@ -1,0 +1,333 @@
+version: '1'
+created_at: '2026-06-19T12:25:26.480439'
+run_id: f1e2997b-20af-4bac-9560-5074bc5625c6
+meta:
+  agenttape_version: 0.1.8
+  mode: record
+  freeze:
+    features:
+      - clock
+      - random
+      - uuid
+    base_time: 1781852126.4830155
+    base_iso: '2026-06-19T06:55:26.483016+00:00'
+    base_offset: 19800
+    random_seed: 0
+    uuids: []
+interactions:
+  - index: 0
+    kind: tool
+    boundary: fetch_repo
+    request:
+      name: fetch_repo
+      args:
+        owner: fastapi
+        repo: fastapi
+    response:
+      name: fastapi/fastapi
+      description: 'FastAPI framework, high performance, easy to learn, fast to code, ready for production'
+      stars: 99391
+      forks: 9453
+      open_issues: 88
+      language: Python
+      topics:
+        - api
+        - async
+        - asyncio
+        - fastapi
+        - framework
+        - json
+        - json-schema
+        - openapi
+        - openapi3
+        - pydantic
+        - python
+        - python-types
+        - python3
+        - redoc
+        - rest
+        - starlette
+        - swagger
+        - swagger-ui
+        - uvicorn
+        - web
+      license: MIT
+      created_at: '2018-12-08T08:21:47Z'
+      updated_at: '2026-06-19T05:55:55Z'
+      default_branch: master
+      homepage: 'https://fastapi.tiangolo.com/'
+    match_key: 'sha256:6f15a01b18861dc94af34051425fb2ea214771e571333f8874f126209baa9de7'
+    latency_ms: 490.872
+  - index: 1
+    kind: tool
+    boundary: fetch_recent_issues
+    request:
+      name: fetch_recent_issues
+      args:
+        owner: fastapi
+        repo: fastapi
+        n: 10
+    response: []
+    match_key: 'sha256:0b000544ef682b71121b52bbc223f6c280f8e9b07cb2e05bf0381847441ebe77'
+    latency_ms: 414.875
+  - index: 2
+    kind: tool
+    boundary: fetch_recent_prs
+    request:
+      name: fetch_recent_prs
+      args:
+        owner: fastapi
+        repo: fastapi
+        n: 10
+    response:
+      - number: 11782
+        title: '📝 Add documentation on how to use the Django ORM inside FastAPI'
+        draft: false
+        created_at: '2024-07-01T15:20:16Z'
+        updated_at: '2025-10-22T13:37:41Z'
+      - number: 13758
+        title: '✨ Fix `APIKeyQuery` for WebSocket endpoints'
+        draft: false
+        created_at: '2025-06-03T17:07:18Z'
+        updated_at: '2025-11-24T19:09:28Z'
+      - number: 10647
+        title: 'fix: respect call localns at get_typed_signature'
+        draft: false
+        created_at: '2023-11-14T13:25:02Z'
+        updated_at: '2025-12-07T11:22:27Z'
+      - number: 13614
+        title: '✨ Accept multiple status codes or exceptions in `exception_handler`'
+        draft: false
+        created_at: '2025-04-14T09:16:24Z'
+        updated_at: '2025-12-17T21:30:30Z'
+      - number: 14655
+        title: Add support for Sentinel values
+        draft: false
+        created_at: '2026-01-06T21:47:39Z'
+        updated_at: '2026-01-08T08:17:57Z'
+      - number: 14441
+        title: '⚡️Improve caching of callable inspection result'
+        draft: false
+        created_at: '2025-12-03T11:18:12Z'
+        updated_at: '2026-02-04T14:31:59Z'
+      - number: 14089
+        title: '✨ Improve JSON Parsing Error Messages'
+        draft: false
+        created_at: '2025-09-18T21:27:03Z'
+        updated_at: '2026-02-04T14:37:09Z'
+      - number: 14574
+        title: 'Fix: Preserve model_fields_set for Form models (issue #13399)'
+        draft: false
+        created_at: '2025-12-19T13:46:48Z'
+        updated_at: '2026-02-06T19:43:28Z'
+      - number: 13264
+        title: '✨ Raise error with clear error message when generator didn''t yield anything'
+        draft: false
+        created_at: '2025-01-28T03:49:16Z'
+        updated_at: '2026-02-12T04:20:18Z'
+      - number: 13605
+        title: '🐛 Ensure handlers receive `fastapi.UploadFile` instances, not Starlette''s'
+        draft: false
+        created_at: '2025-04-11T16:59:38Z'
+        updated_at: '2026-02-12T07:53:33Z'
+    match_key: 'sha256:edb20ca5df406fb936fcc34c2e157c781916488b69645883d94a6bba603b77b9'
+    latency_ms: 436.541
+  - index: 3
+    kind: tool
+    boundary: fetch_contributors
+    request:
+      name: fetch_contributors
+      args:
+        owner: fastapi
+        repo: fastapi
+        n: 10
+    response:
+      - login: tiangolo
+        contributions: 2133
+      - login: 'github-actions[bot]'
+        contributions: 687
+      - login: 'dependabot[bot]'
+        contributions: 217
+      - login: YuriiMotov
+        contributions: 101
+      - login: alejsdev
+        contributions: 60
+      - login: 'pre-commit-ci[bot]'
+        contributions: 50
+      - login: jaystone776
+        contributions: 49
+      - login: valentinDruzhinin
+        contributions: 33
+      - login: ceb10n
+        contributions: 31
+      - login: Kludex
+        contributions: 25
+    match_key: 'sha256:a38b4317839ce65d7089776954ff75b9f9650923ab57b9ad2fbc35358582256c'
+    latency_ms: 363.499
+  - index: 4
+    kind: tool
+    boundary: fetch_readme
+    request:
+      name: fetch_readme
+      args:
+        owner: fastapi
+        repo: fastapi
+    response: |-
+      <p align="center">
+        <a href="https://fastapi.tiangolo.com"><img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" alt="FastAPI"></a>
+      </p>
+      <p align="center">
+          <em>FastAPI framework, high performance, easy to learn, fast to code, ready for production</em>
+      </p>
+      <p align="center">
+      <a href="https://github.com/fastapi/fastapi/actions?query=workflow%3ATest+event%3Apush+branch%3Amaster">
+          <img src="https://github.com/fastapi/fastapi/actions/workflows/test.yml/badge.svg?event=push&branch=master" alt="Test">
+      </a>
+      <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/fastapi">
+          <img src="https://coverage-badge.samuelcolvin.workers.dev/fastapi/fastapi.svg" alt="Coverage">
+      </a>
+      <a href="https://pypi.org/project/fastapi">
+          <img src="https://img.shields.io/pypi/v/fastapi?color=%2334D058&label=pypi%20package" alt="Package version">
+      </a>
+      <a href="https://pypi.org/project/fastapi">
+          <img src="https://img.shields.io/pypi/pyversions/fastapi.svg?color=%2334D058" alt="Supported Python versions">
+      </a>
+      </p>
+
+      ---
+
+      **Documentation**: [https://fastapi.tiangolo.com](https://fastapi.tiangolo.com)
+
+      **Source Code**: [https://github.com/fastapi/fastapi](https://github.com/fastapi/fastapi)
+
+      ---
+
+      FastAPI is a modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.
+
+      The key features are:
+
+      * **Fast**: Very high performance, on par with **NodeJS** and **Go** (thanks to Starlette and Pydantic). [One of the fastest Python frameworks available](#performance).
+      * **Fast to code**: Increase the speed to develop features by about 200% to 300%. *
+      * **Fewer bugs**: Reduce about 40% of human (developer) induced errors. *
+      * **Intuitive**: Great editor support. <dfn title="also known as auto-complete, autocompletion, IntelliSense">Completion</dfn> everywhere. Less time debugging.
+      * **Easy**: Designed to be easy to use and learn. Less time reading docs.
+      * **Short**: Minimize code duplication. Multiple features from each parameter declaration. Fewer bugs.
+      * **Robust**: Get production-ready code. With automatic interactive documentation.
+      * **Standards-based**: Based on (and fully compatible with) the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification) (previously known as Swagger) and [JSON Schema](https://json-schema.org/).
+
+      <small>* estimation based on tests conducted by an internal development team, building production applications.</small>
+
+      ## Sponsors
+
+      <!-- sponsors -->
+      ### Keystone Sponsor
+
+      <a href="https://fastapicloud.com" target="_blank" title="FastAPI Cloud. By the same team behind FastAPI. You code. We Cloud."><img src="https://fastapi.tiangolo.com/img/sponsors/fastapicloud.png"></a>
+
+      ### Gold Sponsors
+
+      <a href="https://blockbee.io?ref=fastapi" target="_blank" title="BlockBee Cryptocurrency Payment Gateway"><img src="https://fastapi.tiangolo.com/img/sponsors/blockbee.png"></a>
+      <a href="https://www.propelauth.com/?utm_source=fastapi&utm_campaign=1223&u
+    match_key: 'sha256:b218929522d4230917faab5d9ef9bef1b405c4a9eef2dc92dd8f6aefe6b14275'
+    latency_ms: 417.133
+  - index: 5
+    kind: tool
+    boundary: analyze_repository
+    request:
+      name: analyze_repository
+      args:
+        context: |
+          Repository: fastapi/fastapi
+          Description: FastAPI framework, high performance, easy to learn, fast to code, ready for production
+          Language: Python
+          Stars: 99,391   Forks: 9,453   Open issues: 88
+          Topics: api, async, asyncio, fastapi, framework, json, json-schema, openapi, openapi3, pydantic, python, python-types, python3, redoc, rest, starlette, swagger, swagger-ui, uvicorn, web
+          License: MIT
+          Top contributors: tiangolo, github-actions[bot], dependabot[bot], YuriiMotov, alejsdev
+
+          Recent open issues (sample):
+            (none)
+
+          Recent open PRs (sample):
+            - #11782: 📝 Add documentation on how to use the Django ORM inside FastAPI
+            - #13758: ✨ Fix `APIKeyQuery` for WebSocket endpoints
+            - #10647: fix: respect call localns at get_typed_signature
+            - #13614: ✨ Accept multiple status codes or exceptions in `exception_handler`
+            - #14655: Add support for Sentinel values
+
+          README (first 800 chars):
+          <p align="center">
+            <a href="https://fastapi.tiangolo.com"><img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" alt="FastAPI"></a>
+          </p>
+          <p align="center">
+              <em>FastAPI framework, high performance, easy to learn, fast to code, ready for production</em>
+          </p>
+          <p align="center">
+          <a href="https://github.com/fastapi/fastapi/actions?query=workflow%3ATest+event%3Apush+branch%3Amaster">
+              <img src="https://github.com/fastapi/fastapi/actions/workflows/test.yml/badge.svg?event=push&branch=master" alt="Test">
+          </a>
+          <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/fastapi">
+              <img src="https://coverage-badge.samuelcolvin.workers.dev/fastapi/fastapi.svg" alt="Coverage">
+          </a>
+          <a href="https://pypi.org/project/fastapi">
+              <img src="https://img.shields.io/
+    response:
+      summary: 'FastAPI is a highly popular and performant Python web framework designed for building APIs quickly, leveraging modern Python features like type hints and async/await. It boasts strong community adoption, comprehensive documentation, and is built on established standards like OpenAPI and JSON Schema.'
+      health_score: 10
+      highlights:
+        - 'Exceptional community engagement with nearly 100k stars and robust fork activity, indicating widespread adoption and trust.'
+        - 'Actively maintained with a steady stream of new features and bug fixes, as evidenced by recent pull requests addressing various aspects of the framework.'
+        - 'Strong technical foundation built on Starlette and Pydantic, providing high performance, data validation, and automatic API documentation.'
+        - Clear MIT license encourages adoption and contribution.
+      concerns: []
+      good_first_issues:
+        - Update documentation for a specific feature or use case
+        - Add more type hints to existing internal utility functions
+        - Refine error messages for common validation failures
+      verdict: 'Developers should absolutely adopt and contribute to FastAPI, as it is a well-established, actively maintained, and high-quality framework with a thriving community.'
+    match_key: 'sha256:bcfdef0033bf2de5ab106d65724bbc11176178489ace58516ab326c77f7543a7'
+    latency_ms: 6578.067
+  - index: 6
+    kind: tool
+    boundary: generate_contributor_brief
+    request:
+      name: generate_contributor_brief
+      args:
+        context: |
+          Repository: fastapi/fastapi
+          Description: FastAPI framework, high performance, easy to learn, fast to code, ready for production
+          Language: Python
+          Stars: 99,391   Forks: 9,453   Open issues: 88
+          Topics: api, async, asyncio, fastapi, framework, json, json-schema, openapi, openapi3, pydantic, python, python-types, python3, redoc, rest, starlette, swagger, swagger-ui, uvicorn, web
+          License: MIT
+          Top contributors: tiangolo, github-actions[bot], dependabot[bot], YuriiMotov, alejsdev
+
+          Recent open issues (sample):
+            (none)
+
+          Recent open PRs (sample):
+            - #11782: 📝 Add documentation on how to use the Django ORM inside FastAPI
+            - #13758: ✨ Fix `APIKeyQuery` for WebSocket endpoints
+            - #10647: fix: respect call localns at get_typed_signature
+            - #13614: ✨ Accept multiple status codes or exceptions in `exception_handler`
+            - #14655: Add support for Sentinel values
+
+          README (first 800 chars):
+          <p align="center">
+            <a href="https://fastapi.tiangolo.com"><img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" alt="FastAPI"></a>
+          </p>
+          <p align="center">
+              <em>FastAPI framework, high performance, easy to learn, fast to code, ready for production</em>
+          </p>
+          <p align="center">
+          <a href="https://github.com/fastapi/fastapi/actions?query=workflow%3ATest+event%3Apush+branch%3Amaster">
+              <img src="https://github.com/fastapi/fastapi/actions/workflows/test.yml/badge.svg?event=push&branch=master" alt="Test">
+          </a>
+          <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/fastapi">
+              <img src="https://coverage-badge.samuelcolvin.workers.dev/fastapi/fastapi.svg" alt="Coverage">
+          </a>
+          <a href="https://pypi.org/project/fastapi">
+              <img src="https://img.shields.io/
+    response: 'Welcome to FastAPI! To get started, familiarize yourself with our comprehensive documentation at fastapi.tiangolo.com and then explore existing issues for potential fixes or new features. We particularly appreciate contributions that enhance performance, refine type hints, improve documentation for real-world use cases, or expand our asynchronous and OpenAPI capabilities. Our community prides itself on an easy-to-learn, production-ready framework, so clear, well-tested contributions that maintain a high developer experience are highly valued.'
+    match_key: 'sha256:b40b3a119881b00a6bdb55a703b116ee9c59b7b076d3070f3b6db03df6f367df'
+    latency_ms: 6667.193

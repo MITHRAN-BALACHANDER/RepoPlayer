@@ -1,0 +1,10 @@
+# AgentTape configuration for RepoScope
+cassette_dir = "cassettes"
+default_mode = "none"
+freeze = ["clock", "uuid", "random"]
+
+[redact]
+# Never let API keys or tokens reach the cassette file
+denylist = ["Authorization", "x-api-key", "api_key", "token", "GITHUB_TOKEN"]
+redact_emails = true
+enabled = true
