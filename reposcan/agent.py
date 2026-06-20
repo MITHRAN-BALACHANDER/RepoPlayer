@@ -16,6 +16,8 @@ from .github_tools import (
 )
 from .ai_tools import analyze_repository, generate_contributor_brief
 
+_README_PREVIEW_CHARS = 800
+
 
 def run(owner: str, repo: str) -> dict:
     """
@@ -29,7 +31,7 @@ def run(owner: str, repo: str) -> dict:
         issues           - list of recent open issues
         prs              - list of recent open pull requests
         contributors     - top contributors by commit count
-        readme_preview   - first 500 chars of README
+        readme_preview   - first 800 chars of README
         analysis         - LLM structured analysis (summary, health_score, ...)
         onboarding       - LLM contributor onboarding paragraph
     """
@@ -57,8 +59,8 @@ Recent open issues (sample):
 Recent open PRs (sample):
 {pr_titles or '  (none)'}
 
-README (first 800 chars):
-{readme[:800]}
+README (first {_README_PREVIEW_CHARS} chars):
+{readme[:_README_PREVIEW_CHARS]}
 """
 
     analysis   = analyze_repository(context)
@@ -69,7 +71,7 @@ README (first 800 chars):
         "issues":         issues,
         "prs":            prs,
         "contributors":   contributors,
-        "readme_preview": readme[:500],
+        "readme_preview": readme[:_README_PREVIEW_CHARS],
         "analysis":       analysis,
         "onboarding":     onboarding,
     }

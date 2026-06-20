@@ -47,7 +47,12 @@ def analyze_repository(context: str) -> dict:
         raw = parts[1] if len(parts) >= 2 else parts[-1]
         if raw.startswith("json"):
             raw = raw[4:]
-    return json.loads(raw.strip())
+    try:
+        return json.loads(raw.strip())
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"LLM returned invalid JSON: {exc}\nRaw response:\n{raw!r}"
+        ) from exc
 
 
 @agenttape.tool

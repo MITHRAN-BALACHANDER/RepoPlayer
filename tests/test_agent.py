@@ -3,7 +3,7 @@ Tests for RepoScope — GitHub Repository Intelligence Agent.
 
 All tests replay from committed cassettes — zero API calls, zero cost.
 The cassette was recorded once with:
-    python reposcan.py record fastapi/fastapi
+    python cli.py record fastapi/fastapi
 
 To re-record against live APIs:
     pytest --agenttape-record
@@ -22,24 +22,21 @@ CASSETTE = "fastapi__fastapi"
 
 
 # ── Full agent pipeline ────────────────────────────────────────────────────
+# These tests only inspect result data; they share a single session-scoped
+# replay via the fastapi_result fixture (defined in conftest.py).
 
-@pytest.mark.agenttape(CASSETTE)
-def test_agent_returns_all_sections(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-
-    assert "repo" in result
-    assert "issues" in result
-    assert "prs" in result
-    assert "contributors" in result
-    assert "readme_preview" in result
-    assert "analysis" in result
-    assert "onboarding" in result
+def test_agent_returns_all_sections(fastapi_result):
+    assert "repo" in fastapi_result
+    assert "issues" in fastapi_result
+    assert "prs" in fastapi_result
+    assert "contributors" in fastapi_result
+    assert "readme_preview" in fastapi_result
+    assert "analysis" in fastapi_result
+    assert "onboarding" in fastapi_result
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_agent_repo_fields(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    repo = result["repo"]
+def test_agent_repo_fields(fastapi_result):
+    repo = fastapi_result["repo"]
 
     assert "fastapi" in repo["name"].lower()
     assert repo["language"] == "Python"
@@ -50,14 +47,9 @@ def test_agent_repo_fields(agenttape_cassette):
     assert repo["default_branch"]
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_agent_issues_are_real(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    issues = result["issues"]
+def test_agent_issues_are_real(fastapi_result):
+    issues = fastapi_result["issues"]
 
-    # Issues list may be empty if GitHub's first-page results were all PRs
-    # (fastapi has 1000+ open PRs; the updated-sort page may not include issues).
-    # The important thing is that the list and structure are correct.
     assert isinstance(issues, list)
     if issues:
         first = issues[0]
@@ -67,10 +59,8 @@ def test_agent_issues_are_real(agenttape_cassette):
         assert isinstance(first["number"], int)
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_agent_prs_shape(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    prs = result["prs"]
+def test_agent_prs_shape(fastapi_result):
+    prs = fastapi_result["prs"]
 
     assert isinstance(prs, list)
     if prs:
@@ -80,10 +70,8 @@ def test_agent_prs_shape(agenttape_cassette):
         assert "draft" in first
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_agent_contributors_shape(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    contributors = result["contributors"]
+def test_agent_contributors_shape(fastapi_result):
+    contributors = fastapi_result["contributors"]
 
     assert isinstance(contributors, list)
     assert len(contributors) > 0
@@ -94,85 +82,68 @@ def test_agent_contributors_shape(agenttape_cassette):
     assert "tiangolo" in logins
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_agent_readme_non_empty(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    assert len(result["readme_preview"]) > 100
+def test_agent_readme_non_empty(fastapi_result):
+    assert len(fastapi_result["readme_preview"]) > 100
 
 
 # ── AI analysis structure ──────────────────────────────────────────────────
 
-@pytest.mark.agenttape(CASSETTE)
-def test_analysis_has_all_keys(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    analysis = result["analysis"]
+def test_analysis_has_all_keys(fastapi_result):
+    analysis = fastapi_result["analysis"]
 
     for key in ("summary", "health_score", "highlights", "concerns",
                 "good_first_issues", "verdict"):
         assert key in analysis, f"Missing key in analysis: {key}"
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_analysis_health_score_in_range(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    score = result["analysis"]["health_score"]
+def test_analysis_health_score_in_range(fastapi_result):
+    score = fastapi_result["analysis"]["health_score"]
     assert isinstance(score, int)
     assert 1 <= score <= 10
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_analysis_highlights_non_empty(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    highlights = result["analysis"]["highlights"]
+def test_analysis_highlights_non_empty(fastapi_result):
+    highlights = fastapi_result["analysis"]["highlights"]
     assert isinstance(highlights, list)
     assert len(highlights) >= 1
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_analysis_verdict_is_string(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    verdict = result["analysis"]["verdict"]
+def test_analysis_verdict_is_string(fastapi_result):
+    verdict = fastapi_result["analysis"]["verdict"]
     assert isinstance(verdict, str)
     assert len(verdict) > 20
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_onboarding_is_paragraph(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    onboarding = result["onboarding"]
+def test_onboarding_is_paragraph(fastapi_result):
+    onboarding = fastapi_result["onboarding"]
     assert isinstance(onboarding, str)
     assert len(onboarding) > 50
 
 
 # ── Report formatting ──────────────────────────────────────────────────────
 
-@pytest.mark.agenttape(CASSETTE)
-def test_format_report_contains_repo_name(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    report = format_report(result)
+def test_format_report_contains_repo_name(fastapi_result):
+    report = format_report(fastapi_result)
     assert "fastapi" in report.lower()
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_format_report_contains_health_score(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    report = format_report(result)
+def test_format_report_contains_health_score(fastapi_result):
+    report = format_report(fastapi_result)
     assert "Health Score" in report
 
 
-@pytest.mark.agenttape(CASSETTE)
-def test_format_report_contains_verdict(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    report = format_report(result)
+def test_format_report_contains_verdict(fastapi_result):
+    report = format_report(fastapi_result)
     assert "Verdict" in report
 
 
 # ── Individual tool boundary tests ────────────────────────────────────────
+# These tests introspect agenttape_cassette.interactions so they must
+# call run() themselves inside a cassette context.
 
 @pytest.mark.agenttape(CASSETTE)
 def test_fetch_repo_boundary(agenttape_cassette):
-    result = run("fastapi", "fastapi")
-    # Verify the tool was exercised (cassette introspection)
+    run("fastapi", "fastapi")
     boundaries = [i.boundary for i in agenttape_cassette.interactions]
     assert "fetch_repo" in boundaries
 
@@ -201,11 +172,9 @@ def test_interaction_kinds(agenttape_cassette):
 
 @pytest.mark.agenttape(CASSETTE)
 def test_replay_is_deterministic(agenttape_cassette):
-    """Two replays must return byte-identical results."""
+    """Two replays within the same cassette context must return identical results."""
     r1 = run("fastapi", "fastapi")
-
-    with agenttape.use_cassette(CASSETTE, mode="none"):
-        r2 = run("fastapi", "fastapi")
+    r2 = run("fastapi", "fastapi")
 
     assert r1["repo"] == r2["repo"]
     assert r1["analysis"] == r2["analysis"]

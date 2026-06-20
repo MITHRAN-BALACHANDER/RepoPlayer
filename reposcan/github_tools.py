@@ -52,11 +52,16 @@ def fetch_repo(owner: str, repo: str) -> dict:
 
 @agenttape.tool
 def fetch_recent_issues(owner: str, repo: str, n: int = 10) -> list:
-    """Fetch the N most recently updated open issues (excluding PRs)."""
+    """Fetch the N most recently updated open issues (excluding PRs).
+
+    Requests 3× the desired count to account for PRs mixed into the
+    /issues endpoint response (GitHub's issues API returns both issues
+    and PRs; we filter out PRs after fetching).
+    """
     r = requests.get(
         f"{BASE}/repos/{owner}/{repo}/issues",
         headers=_headers(),
-        params={"state": "open", "per_page": n, "sort": "updated"},
+        params={"state": "open", "per_page": min(n * 3, 100), "sort": "updated"},
         timeout=10,
     )
     r.raise_for_status()
