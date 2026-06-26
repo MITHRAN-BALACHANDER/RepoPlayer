@@ -253,6 +253,23 @@ with agenttape.use_cassette("fastapi__fastapi", mode="none"):
 
 7 boundaries are recorded per repo: 5 GitHub API calls (`fetch_repo`, `fetch_recent_issues`, `fetch_recent_prs`, `fetch_contributors`, `fetch_readme`) and 2 LLM calls (`analyze_repository`, `generate_contributor_brief`).
 
+### Consume-once replay and determinism
+
+Within a single cassette session each recorded interaction is served **exactly once**, in order — the same model as VCR-style HTTP cassettes. Replaying the *same* boundary a second time inside one `use_cassette` block raises `UnmatchedInteractionError`, because there is no second unconsumed recording to serve.
+
+This is why determinism is verified across **two independent replay sessions** rather than two passes in one (see `test_replay_is_deterministic`): each `use_cassette` context rebuilds its slots fresh, so a clean replay from scratch is guaranteed to be byte-identical.
+
+```python
+with agenttape.use_cassette("fastapi__fastapi", mode="none"):
+    r1 = run("fastapi", "fastapi")
+with agenttape.use_cassette("fastapi__fastapi", mode="none"):
+    r2 = run("fastapi", "fastapi")
+
+assert r1 == r2   # identical, offline, free
+```
+
+If you genuinely need to replay the same call N times in one session, re-record the cassette with that many calls (or use a non-consuming matcher).
+
 ---
 
 ## AgentTape features demonstrated
@@ -264,6 +281,7 @@ with agenttape.use_cassette("fastapi__fastapi", mode="none"):
 | `mode="none"` | `cli.py show` and all pytest tests |
 | `@pytest.mark.agenttape` | Boundary-introspection tests in `tests/test_agent.py` |
 | `agenttape_cassette` fixture | Inspecting `interactions` (boundary, kind) in tests |
+| Consume-once replay / determinism | `test_replay_is_deterministic` -- two independent replay sessions |
 | Frozen clock / random / uuid | `freeze = ["clock", "uuid", "random"]` in `agenttape.toml` |
 | Secret redaction | API keys + tokens stripped from cassettes automatically |
 | Git-friendly YAML cassettes | `cassettes/` committed to version control |

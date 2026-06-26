@@ -170,11 +170,17 @@ def test_interaction_kinds(agenttape_cassette):
 
 # ── Determinism: replay is byte-identical ─────────────────────────────────
 
-@pytest.mark.agenttape(CASSETTE)
-def test_replay_is_deterministic(agenttape_cassette):
-    """Two replays within the same cassette context must return identical results."""
-    r1 = run("fastapi", "fastapi")
-    r2 = run("fastapi", "fastapi")
+def test_replay_is_deterministic():
+    """Two independent replays of the same cassette must return identical results.
+
+    Cassettes are consume-once: each recorded interaction is served a single time
+    per session. Determinism therefore means replaying the cassette from scratch
+    twice yields identical output, so each run gets its own use_cassette context.
+    """
+    with agenttape.use_cassette(CASSETTE, mode="none"):
+        r1 = run("fastapi", "fastapi")
+    with agenttape.use_cassette(CASSETTE, mode="none"):
+        r2 = run("fastapi", "fastapi")
 
     assert r1["repo"] == r2["repo"]
     assert r1["analysis"] == r2["analysis"]
