@@ -1,10 +1,10 @@
 # RepoScope
 
-**Understand any GitHub repository in seconds — AI-powered, fully testable.**
+**Understand any GitHub repository in seconds -- AI-powered, fully testable.**
 
-RepoScope fetches live data from the GitHub API, runs it through an LLM, and produces a structured intelligence report: health score, highlights, concerns, good-first-issues, and a contributor onboarding guide.
+RepoScope fetches live data from the GitHub API, runs it through an LLM, and produces a structured intelligence report: summary, health score, highlights, concerns, good-first-issues, a verdict, and a contributor onboarding guide.
 
-Built on [AgentTape](https://pypi.org/project/agenttape/) — every external call is recorded once and replayed forever, so tests run offline in under a second with zero API cost.
+Built on [AgentTape](https://pypi.org/project/agenttape/) -- every external call is recorded once and replayed forever, so tests run offline in under a second with zero API cost.
 
 ---
 
@@ -14,11 +14,11 @@ Evaluating an unfamiliar GitHub repository before adopting it or contributing ta
 
 RepoScope does it in one command.
 
-```
-python reposcan.py record fastapi/fastapi
+```bash
+python cli.py record fastapi/fastapi
 ```
 
-Output:
+The report below is the exact output replayed from the committed `cassettes/fastapi__fastapi.yaml` (recorded 2026-06-19 against the real GitHub API and Gemini):
 
 ```
 ==============================================================
@@ -28,20 +28,43 @@ Output:
 
   Language : Python
   Stars    : 99,391
+  Forks    : 9,453
+  Issues   : 88 open
   License  : MIT
+  Topics   : api, async, asyncio, fastapi, framework, json, ...
 
--- Health Score: 10 / 10 ------------------------------------
+-- Summary --------------------------------------------------
+FastAPI is a highly popular and performant Python web framework
+designed for building APIs quickly, leveraging modern Python
+features like type hints and async/await. It boasts strong
+community adoption, comprehensive documentation, and is built on
+established standards like OpenAPI and JSON Schema.
+
+-- Health Score: 10 / 10 ---------------------------------
 
 -- Highlights -----------------------------------------------
-  + Exceptional community engagement (~100k stars)
-  + Actively maintained with steady stream of bug fixes
-  + Strong technical foundation built on Starlette and Pydantic
+  + Exceptional community engagement with nearly 100k stars and
+    robust fork activity, indicating widespread adoption and trust.
+  + Actively maintained with a steady stream of new features and
+    bug fixes, as evidenced by recent pull requests.
+  + Strong technical foundation built on Starlette and Pydantic,
+    providing high performance and automatic API documentation.
+  + Clear MIT license encourages adoption and contribution.
+
+-- Good First Issues ----------------------------------------
+  * Update documentation for a specific feature or use case
+  * Add more type hints to existing internal utility functions
+  * Refine error messages for common validation failures
 
 -- Verdict --------------------------------------------------
-  Developers should absolutely adopt FastAPI.
+  Developers should absolutely adopt and contribute to FastAPI,
+  as it is a well-established, actively maintained, and
+  high-quality framework with a thriving community.
 
 -- Onboarding -----------------------------------------------
-  Welcome to FastAPI! Start with the docs at fastapi.tiangolo.com...
+Welcome to FastAPI! To get started, familiarize yourself with our
+comprehensive documentation at fastapi.tiangolo.com and then
+explore existing issues for potential fixes or new features...
 ==============================================================
 ```
 
@@ -53,11 +76,13 @@ Without AgentTape, every test run would consume GitHub API rate quota, spend rea
 
 | | Without AgentTape | With AgentTape |
 |---|---|---|
-| CI cost | ~$0.01 per run x N runs | **$0** after first record |
-| Speed | 5-10 seconds | **< 1 second** |
+| CI cost | LLM tokens per run x N runs | **$0** after first record |
+| Speed | ~15 s (sum of real API latencies) | **< 1 s** replay |
 | Flakiness | GitHub API or LLM varies | **byte-identical** every run |
 | API keys in CI | Required | **Not needed** |
 | Offline dev | Impossible | **Works anywhere** |
+
+The numbers are measured from this repo: the recorded latencies in `cassettes/fastapi__fastapi.yaml` total ~15.4 s of real API time (two LLM calls alone are ~6.6 s each), while the full 19-test suite replays in ~0.9 s.
 
 The key insight: **record once against real services, replay forever for free.**
 
@@ -83,7 +108,7 @@ cp .env.example .env
 ### 3. Record a cassette (once -- calls real APIs)
 
 ```bash
-python reposcan.py record fastapi/fastapi
+python cli.py record fastapi/fastapi
 ```
 
 This calls GitHub + your LLM once and saves everything to `cassettes/fastapi__fastapi.yaml`. Commit that file to Git.
@@ -91,7 +116,7 @@ This calls GitHub + your LLM once and saves everything to `cassettes/fastapi__fa
 ### 4. Replay offline (no key, no network, no cost)
 
 ```bash
-python reposcan.py show fastapi/fastapi
+python cli.py show fastapi/fastapi
 ```
 
 ### 5. Run tests (pure offline replay)
@@ -105,17 +130,19 @@ pytest --agenttape-record     # re-record against live APIs
 
 ## CLI reference
 
+`cli.py` is the canonical entry point. `reposcan.py` is a thin compatibility shim that runs `cli.py`, so the older `python reposcan.py ...` invocation still works.
+
 ```
-python reposcan.py record <owner/repo>   Record cassette from real APIs
-python reposcan.py show   <owner/repo>   Display saved report (offline)
+python cli.py record <owner/repo>   Record cassette from real APIs
+python cli.py show   <owner/repo>   Display saved report (offline)
 ```
 
 Examples:
 
 ```bash
-python reposcan.py record fastapi/fastapi
-python reposcan.py record pallets/flask
-python reposcan.py show   fastapi/fastapi
+python cli.py record fastapi/fastapi
+python cli.py record pallets/flask
+python cli.py show   fastapi/fastapi
 ```
 
 ---
@@ -146,7 +173,7 @@ Set in `.env`:
 LLM_PROVIDER=ollama
 ```
 
-Optional model overrides (set in `.env`):
+Optional model overrides (set in `.env`, with the defaults shown):
 
 ```
 GEMINI_MODEL=gemini-2.5-flash
@@ -165,29 +192,34 @@ By default, GitHub allows 60 unauthenticated requests per hour -- enough for occ
 GITHUB_TOKEN=ghp_...
 ```
 
-Generate one at [github.com/settings/tokens](https://github.com/settings/tokens) -- no scopes needed for public repos.
+Generate one at [github.com/settings/tokens](https://github.com/settings/tokens) -- no scopes needed for public repos. The token is redacted out of cassettes automatically (see `agenttape.toml`).
 
 ---
 
 ## Project structure
 
 ```
+cli.py                  canonical CLI entry point (record / show)
+reposcan.py             compatibility shim -- runs cli.py
+
 reposcan/
-    __init__.py         auto-loads .env
-    agent.py            main orchestration -- run() and format_report()
-    github_tools.py     @agenttape.tool GitHub API functions
-    ai_tools.py         @agenttape.tool LLM analysis functions
+    __init__.py         package marker (empty; .env is loaded by cli.py)
+    agent.py            orchestration -- run() and format_report()
+    github_tools.py     @agenttape.tool GitHub API functions (5)
+    ai_tools.py         @agenttape.tool LLM analysis functions (2)
     llm.py              multi-provider LLM dispatcher
 
 tests/
+    conftest.py         session-scoped replay fixture (fastapi_result)
     test_agent.py       19 tests -- all offline replay
 
-cassettes/
-    fastapi__fastapi.yaml   committed recording (real GitHub + LLM data)
+cassettes/              committed recordings (real GitHub + LLM data)
+    fastapi__fastapi.yaml
+    pallets__flask.yaml ... (one .yaml per analysed repo)
 
-reposcan.py             CLI entry point (record / show)
 .env.example            environment variable template
 agenttape.toml          cassette config + secret redaction
+pytest.ini              pytest config + agenttape marker
 requirements.txt
 ```
 
@@ -209,7 +241,7 @@ def analyze_repository(context):      # LLM call
 
 On first run (`mode="record"`): the function executes for real and the response is saved to a YAML cassette.
 
-On every subsequent run (`mode="none"`): AgentTape intercepts the call before it runs and returns the saved response. Zero network. Zero tokens.
+On every subsequent run (`mode="none"`, the default in `agenttape.toml`): AgentTape intercepts the call before it runs and returns the saved response. Zero network. Zero tokens.
 
 ```python
 with agenttape.use_cassette("fastapi__fastapi", mode="record"):
@@ -219,7 +251,7 @@ with agenttape.use_cassette("fastapi__fastapi", mode="none"):
     result = run("fastapi", "fastapi")   # reads from cassette, offline
 ```
 
-7 boundaries are recorded per repo: 5 GitHub API calls and 2 LLM calls.
+7 boundaries are recorded per repo: 5 GitHub API calls (`fetch_repo`, `fetch_recent_issues`, `fetch_recent_prs`, `fetch_contributors`, `fetch_readme`) and 2 LLM calls (`analyze_repository`, `generate_contributor_brief`).
 
 ---
 
@@ -228,11 +260,12 @@ with agenttape.use_cassette("fastapi__fastapi", mode="none"):
 | Feature | Where |
 |---|---|
 | `@agenttape.tool` | All 7 external boundary functions |
-| `mode="record"` | `reposcan.py record` -- writes cassette from real APIs |
-| `mode="none"` | `reposcan.py show` and all pytest tests |
-| `@pytest.mark.agenttape` | Every test in `tests/test_agent.py` |
-| `agenttape_cassette` fixture | Boundary introspection in tests |
-| Secret redaction | API keys + tokens stripped from cassette automatically |
+| `mode="record"` | `cli.py record` -- writes cassette from real APIs |
+| `mode="none"` | `cli.py show` and all pytest tests |
+| `@pytest.mark.agenttape` | Boundary-introspection tests in `tests/test_agent.py` |
+| `agenttape_cassette` fixture | Inspecting `interactions` (boundary, kind) in tests |
+| Frozen clock / random / uuid | `freeze = ["clock", "uuid", "random"]` in `agenttape.toml` |
+| Secret redaction | API keys + tokens stripped from cassettes automatically |
 | Git-friendly YAML cassettes | `cassettes/` committed to version control |
 
 ---
@@ -240,8 +273,8 @@ with agenttape.use_cassette("fastapi__fastapi", mode="none"):
 ## Analysing a different repository
 
 ```bash
-python reposcan.py record pallets/flask
-python reposcan.py show   pallets/flask
+python cli.py record pallets/flask
+python cli.py show   pallets/flask
 ```
 
 Each repository gets its own cassette (`cassettes/owner__repo.yaml`). Record once, replay forever.
@@ -253,7 +286,7 @@ Each repository gets its own cassette (`cassettes/owner__repo.yaml`). Record onc
 If you want a fresh snapshot of a repository's current state:
 
 ```bash
-python reposcan.py record fastapi/fastapi
+python cli.py record fastapi/fastapi
 # or from pytest:
 pytest --agenttape-record
 ```
@@ -262,4 +295,4 @@ pytest --agenttape-record
 
 ## License
 
-MIT
+MIT -- see the `Licence` file.
